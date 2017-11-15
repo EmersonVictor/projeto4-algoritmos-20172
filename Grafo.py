@@ -84,6 +84,10 @@ class Grafo:
         else:
             return arestas // 2
 
+    def vertices(self):
+        # Devolve todos os vertices do grafo
+        return [v for v in self.__listaAdj]
+
     def imprimirGrafo(self):
         # Imprimir grafo
         for v in self.__listaAdj:
