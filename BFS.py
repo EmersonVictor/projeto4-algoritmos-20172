@@ -32,10 +32,18 @@ def bfs(grafo):
 
             while not(visitar == []):
                 v = visitar.pop(0)
-                for u in grafo.listaAdjacentes(v):
-                    if marcado[u] is False:
-                        marcado[u] = True
-                        antecessor[u] = v
-                        visitar.append(u)
+                if grafo.ponderado():
+                    for u in grafo.listaAdjacentes(v):
+                        if marcado[u][1] is False:
+                            marcado[u] = True
+                            antecessor[u] = v
+                            visitar.append(u)
+
+                else:
+                    for u in grafo.listaAdjacentes(v):
+                        if marcado[u] is False:
+                            marcado[u] = True
+                            antecessor[u] = v
+                            visitar.append(u)
 
     return antecessor
