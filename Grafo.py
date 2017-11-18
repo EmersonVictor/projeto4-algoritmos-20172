@@ -23,49 +23,45 @@ class Grafo:
         self.__ponderado = ponderado
 
     def direcionado(self):
-        # Devolve um valor booleano que representa se o grafo é direcionado ou não
+        '''Devolve um valor booleano que representa
+        se o grafo é direcionado ou não'''
         return self.__direcionado
 
     def ponderado(self):
-        # Devolve um valor booleano que representa se o grafo possui ou não pesos nas arestas
+        ''' Devolve um valor booleano que representa
+         se o grafo possui ou não pesos nas arestas'''
         return self.__ponderado
 
-    def criarGrafo(self, listaVertices):
+    def criarGrafo(self, numVertices):
         # Criar grafo com v vértices e sem arestas
-        for v in listaVertices:
+        for v in range(numVertices):
             self.__listaAdj[v] = list()
 
     def inserirAresta(self, verticeOrigem, verticeDestino, peso=None):
         # Inserir aresta de um vértice origem para um vértice destino
-        if verticeOrigem in self.__listaAdj and verticeDestino in self.__listaAdj:
-            if self.direcionado() is True:
-                if self.ponderado():
-                    self.__listaAdj[verticeOrigem].append((peso, verticeDestino))
-                else:
-                    self.__listaAdj[verticeOrigem].append(verticeDestino)
+        if self.direcionado():
+            if self.ponderado():
+                self.__listaAdj[verticeOrigem].append((peso, verticeDestino))
             else:
-                if self.ponderado() is False:
-                    self.__listaAdj[verticeOrigem].append(verticeDestino)
-                    self.__listaAdj[verticeDestino].append(verticeOrigem)
-                else:
-                    self.__listaAdj[verticeOrigem].append(peso, verticeDestino)
-                    self.__listaAdj[verticeDestino].append(peso, verticeOrigem)
+                self.__listaAdj[verticeOrigem].append(verticeDestino)
         else:
-            raise KeyError("Grafo não possui vértice de origem ou vértice de destino")
+            if self.ponderado() is False:
+                self.__listaAdj[verticeOrigem].append(verticeDestino)
+                self.__listaAdj[verticeDestino].append(verticeOrigem)
+            else:
+                self.__listaAdj[verticeOrigem].append(peso, verticeDestino)
+                self.__listaAdj[verticeDestino].append(peso, verticeOrigem)
 
     def verificarAresta(self, verticeOrigem, verticeDestino):
         # Verificar se aresta entre vértice de origem e vértice destino existe
-        if verticeOrigem in self.__listaAdj and verticeDestino in self.__listaAdj:
-            if self.ponderado():
-                for v in self.__listaAdj[verticeOrigem]:
-                    if v[1] == verticeDestino:
-                        return True
-            else:
-                if verticeDestino in self.__listaAdj[verticeOrigem]:
+        if self.ponderado():
+            for v in self.__listaAdj[verticeOrigem]:
+                if v[1] == verticeDestino:
                     return True
-            return False
         else:
-            raise KeyError("Grafo não possui vértice de origem ou vértice de destino")
+            if verticeDestino in self.__listaAdj[verticeOrigem]:
+                return True
+        return False
 
     def listaAdjacentes(self, vertice):
         # Devolve a lista de vértices adjancentes a um vértice
@@ -76,35 +72,31 @@ class Grafo:
 
     def removerAresta(self, verticeOrigem, verticeDestino):
         # Remover uma aresta entre vértice origem e vértice destino
-        if verticeOrigem in self.__listaAdj and verticeDestino in self.__listaAdj:
-            if self.direcionado() is True:
-                if self.ponderado() is False:
-                    self.__listaAdj[verticeOrigem].remove(verticeDestino)
-                else:
-                    c = 0
-                    for v in self.__listaAdj[verticeOrigem]:
-                        if v[1] == verticeDestino: 
-                            self.__listaAdj[verticeOrigem].pop(c)
-                        c += 1
+        if self.direcionado() is True:
+            if self.ponderado() is False:
+                self.__listaAdj[verticeOrigem].remove(verticeDestino)
             else:
-                if self.ponderado() is False:
-                    self.__listaAdj[verticeOrigem].remove(verticeDestino)
-                    self.__listaAdj[verticeDestino].remove(verticeOrigem)
-                else:
-                    c = 0
-                    for v in self.__listaAdj[verticeOrigem]:
-                        if v[1] == verticeDestino: 
-                            self.__listaAdj[verticeOrigem].pop(c)
-                        c += 1
-
-                    c = 0
-                    for v in self.__listaAdj[verticeDestino]:
-                        if v[1] == verticeOrigem: 
-                            self.__listaAdj[verticeOrigem].pop(c)
-                        c += 1
-
+                c = 0
+                for v in self.__listaAdj[verticeOrigem]:
+                    if v[1] == verticeDestino:
+                        self.__listaAdj[verticeOrigem].pop(c)
+                    c += 1
         else:
-            raise KeyError("Grafo não possui vértice de origem ou vértice de destino")
+            if self.ponderado() is False:
+                self.__listaAdj[verticeOrigem].remove(verticeDestino)
+                self.__listaAdj[verticeDestino].remove(verticeOrigem)
+            else:
+                c = 0
+                for v in self.__listaAdj[verticeOrigem]:
+                    if v[1] == verticeDestino:
+                        self.__listaAdj[verticeOrigem].pop(c)
+                    c += 1
+
+                c = 0
+                for v in self.__listaAdj[verticeDestino]:
+                    if v[1] == verticeOrigem:
+                        self.__listaAdj[verticeOrigem].pop(c)
+                    c += 1
 
     def numVertices(self):
         # Número de vértices do grafo
@@ -128,5 +120,5 @@ class Grafo:
     def imprimirGrafo(self):
         # Imprimir grafo
         for v in self.__listaAdj:
-            representacao = "Vértice: {0} --> Adjancentes: {1}".format(v,self.__listaAdj[v])
+            representacao = "Vértice: {0} --> Adjancentes: {1}".format(v, self.__listaAdj[v])
             print(representacao)
