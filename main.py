@@ -19,8 +19,8 @@ import timeit
 
 def tempoCriacao(arquivo):
     # Calcula o tempo de criação de um grafo a partir de um arquivo
-    arquivo = open(arquivo, "r")
-    infoGrafo = arquivo.readline()
+    grafoArquivo = open(arquivo, "r")
+    infoGrafo = grafoArquivo.readline()
     infoGrafo = infoGrafo.split()
 
     if infoGrafo[1] == "sym" and infoGrafo[2] == "unweighted":
@@ -35,15 +35,16 @@ def tempoCriacao(arquivo):
     elif infoGrafo[1] == "sym" and infoGrafo[2] == "posweighted":
         grafo = Grafo(False, True)
 
-    listaArestas = [linha.split() for linha in infoGrafo.readlines()]
-    start = timeit.default_timer()
+    listaArestas = [linha.split() for linha in grafoArquivo.readlines()]
+    grafoArquivo.close()
 
+    start = timeit.default_timer()
     if grafo.ponderado():
         for aresta in listaArestas:
-            grafo.inserirAresta(aresta[1], aresta[2], aresta[3])
+            grafo.inserirAresta(int(aresta[0]), int(aresta[1]), int(aresta[2]))
     else:
         for aresta in listaArestas:
-            grafo.inserirAresta(aresta[1], aresta[2])
+            grafo.inserirAresta(int(aresta[0]), int(aresta[1]))
 
     end = timeit.default_timer()
     return grafo, end - start
@@ -60,13 +61,13 @@ def tempoBusca(grafo):
 
 
 def main():
-    arquivos = ["/grafos_teste/airTrafficControl.txt",
-                "/grafos_teste/chicago.txt",
-                "/grafos_teste/dolphins.txt",
-                "/grafos_teste/euroroad.txt",
-                "/grafos_teste/facebook.txt",
-                "/grafos_teste/linux.txt",
-                "/grafos_teste/usairport.txt"]
+    arquivos = ["airTrafficControl.txt",
+                "chicago.txt",
+                "dolphins.txt",
+                "euroroad.txt",
+                "facebook.txt",
+                "linux.txt",
+                "usairport.txt"]
 
     resultados = open("resultados.txt", "a+")
 
@@ -74,13 +75,11 @@ def main():
         grafo, criacao = tempoCriacao(arq)
         antecessores, busca = tempoBusca(grafo)
 
-        resultados.write("Grafo 1 \n Tempo de criação: {0} \n Tempo de busca: {1} \n Antecessores: {2}".format(criacao, busca, antecessores))
+
+        resultados.write("Grafo {3} \n Tempo de criação: {0} \n Tempo de busca: {1} \n Antecessores: {2}\n\n".format(criacao, busca, antecessores, arq))
 
     resultados.close()
 
 
 if __name__ == '__main__':
-    teste = open("chicago.txt", "r")
-    a, b = tempoCriacao(teste)
-    c, d = tempoBusca(a)
-    print(a, b, c, d)
+    main()
